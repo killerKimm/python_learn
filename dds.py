@@ -53,14 +53,17 @@ class Player:
 
     def in_case_wins(self):
         self.wins += 1
+        return self.wins
 
     def in_case_losses(self):
         self.losses += 1
+        return self.losses
 
 
 class Game:
 
-    def __init__(self, player1: Player, player2: Player):
+    def __init__(self, player1: Player, player2: Player, *args):
+        self.main_menu = Menu()
         self.field = Field()
         self.player1 = player1
         self.player2 = player2
@@ -78,6 +81,7 @@ class Game:
             self.field.draw_field(self.field.fields)
             result = self.result_game()
             self.check_result(result)
+            self.drow_check()
 
             player2_move = self.get_move(self.player2)
             self.field.update_field(player2_move, self.player2.role)
@@ -85,6 +89,7 @@ class Game:
             self.field.draw_field(self.field.fields)
             result = self.result_game()
             self.check_result(result)
+            self.drow_check()
 
     def check_result(self, result):
         if result is False:
@@ -93,6 +98,20 @@ class Game:
         winner = self.player1.role if result == "X" else self.player2.role
 
         print(f"Winner is {winner}")
+
+    def drow_check(self):
+        fields = self.field.fields
+        symbol = "."
+        i = []
+        for row in fields:
+            for dot in row:
+                i.append(dot)
+
+        if symbol in i:
+            pass
+        else:
+            print("losser")
+            self.main_menu.main_menu()
 
     def result_game(self):
         fields = self.field.fields
