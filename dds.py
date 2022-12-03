@@ -4,7 +4,6 @@ import os
 
 # DEFAULT FIELD
 
-
 class Field:
 
     I = [[".", ".", "."],
@@ -40,22 +39,23 @@ class Field:
             fields[y][x] = player
             self.fields = fields
 
-            #i[key[0][0]][key[1][0]] = "X"
-
 
 class Player:
 
-    def __init__(self, role: str, name: str):
+    def __init__(self, role: str, name: str, wins: int = 0, losses: int = 0):
         self.role = role
         self.name = name
+        self.wins = wins
+        self.losses = losses
 
     def new_move(self):
         return input(f"{self.name} ({self.role}) move: ")
-        #field.update_field(val, self.role)
 
-        # This is the player
+    def in_case_wins(self):
+        self.wins += 1
 
-# Game controller
+    def in_case_losses(self):
+        self.losses += 1
 
 
 class Game:
@@ -93,7 +93,6 @@ class Game:
         winner = self.player1.role if result == "X" else self.player2.role
 
         print(f"Winner is {winner}")
-        exit()
 
     def result_game(self):
         fields = self.field.fields
@@ -151,8 +150,9 @@ class Game:
     def get_move(self, player: Player):
         field = self.field
         move = player.new_move()
-
-        if move in field.available_moves:
+        if move == "0":  # exit from game loop
+            exit()
+        elif move in field.available_moves:
             key = field.available_moves[move]
             y = key[0]
             x = key[1]
@@ -167,8 +167,25 @@ class Game:
             return self.get_move(player)
 
 
-player = Player("X", "Ramil")
-player2 = Player("O", "Huanio")
+class Menu:
+    print("Hello, bitches")
 
-io = Game(player, player2)
-io.start()
+    def main_menu(self):
+        a = input(f"1--PLAY GAME"
+                  "\n2--SHOWE SCORE (not working)"
+                  "\n3--exit:(\n")
+        if a == "1":
+            player1 = Player("X", input("\nenter name for X: "))
+            player2 = Player("O", input("\nenter name for O: "))
+            io = Game(player1, player2)
+            io.start()
+        elif a == "3":
+            exit()
+
+
+#player = Player("X", "Ramil")
+#player2 = Player("O", "Huanio")
+io = Menu()
+io.main_menu()
+#io = Game(player, player2)
+# io.start()
