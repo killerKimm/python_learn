@@ -6,6 +6,10 @@ import os
 
 class Field:
 
+    stsndart_field = [[".", ".", "."],
+                      [".", ".", "."],
+                      [".", ".", "."]]
+
     I = [[".", ".", "."],
          [".", ".", "."],
          [".", ".", "."]]
@@ -16,8 +20,13 @@ class Field:
 
     def __init__(self):
         self.fields = Field.I
-
+        self.stsndart_field = Field.stsndart_field
     # DRAW THE FIELD
+
+    @staticmethod
+    def giwe_copy_list(list, standart_list):
+        list = standart_list.copy()
+        return list
 
     @staticmethod
     def draw_field(i):
@@ -63,7 +72,7 @@ class Player:
 class Game:
 
     def __init__(self, player1: Player, player2: Player, *args):
-        self.main_menu = Menu()
+        self.menu = Menu()
         self.field = Field()
         self.player1 = player1
         self.player2 = player2
@@ -72,46 +81,48 @@ class Game:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def start(self):
-        Field.draw_field(Field.I)
+        Field.draw_field(Field.giwe_copy_list(Field.I, Field.stsndart_field))
         while True:
-
+            print("press 0 to exit")
             player1_move = self.get_move(self.player1)
             self.field.update_field(player1_move, self.player1.role)
             self.__cls()
             self.field.draw_field(self.field.fields)
             result = self.result_game()
-            self.check_result(result)
-            self.drow_check()
+            if self.check_result(result):
+                return
 
+            print("press 0 to exit")
             player2_move = self.get_move(self.player2)
             self.field.update_field(player2_move, self.player2.role)
             self.__cls()
             self.field.draw_field(self.field.fields)
             result = self.result_game()
-            self.check_result(result)
-            self.drow_check()
+            if self.check_result(result):
+                return
 
     def check_result(self, result):
-        if result is False:
+        is_game_end = self.is_game_end()
+        if result is False and not is_game_end:
             return
+
+        if is_game_end and not result:
+            print("Draw!")
+            return True
 
         winner = self.player1.role if result == "X" else self.player2.role
 
         print(f"Winner is {winner}")
+        return True
 
-    def drow_check(self):
+    def is_game_end(self):
         fields = self.field.fields
         symbol = "."
-        i = []
         for row in fields:
-            for dot in row:
-                i.append(dot)
-
-        if symbol in i:
-            pass
-        else:
-            print("losser")
-            self.main_menu.main_menu()
+            for el in row:
+                if el == symbol:
+                    return False
+        return True
 
     def result_game(self):
         fields = self.field.fields
@@ -179,10 +190,12 @@ class Game:
             if field.fields[y][x] == ".":
                 return move
             else:
-                print("INVALID MOVE")
+                print("INVALID MOVE",
+                      "\npress 0 to exit ")
                 return self.get_move(player)
         else:
-            print("INVALID MOVE")
+            print("INVALID MOVE",
+                  "\npress 0 to exit ")
             return self.get_move(player)
 
 
@@ -190,14 +203,20 @@ class Menu:
     print("Hello, bitches")
 
     def main_menu(self):
+
         a = input(f"1--PLAY GAME"
                   "\n2--SHOWE SCORE (not working)"
                   "\n3--exit:(\n")
         if a == "1":
             player1 = Player("X", input("\nenter name for X: "))
             player2 = Player("O", input("\nenter name for O: "))
+
             io = Game(player1, player2)
             io.start()
+            self.main_menu()
+        elif a == "2":
+            pass
+
         elif a == "3":
             exit()
 
