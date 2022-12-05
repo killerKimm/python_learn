@@ -6,27 +6,22 @@ import os
 
 class Field:
 
-    stsndart_field = [[".", ".", "."],
-                      [".", ".", "."],
-                      [".", ".", "."]]
-
-    I = [[".", ".", "."],
-         [".", ".", "."],
-         [".", ".", "."]]
-
     available_moves = {"q": [0, 0], "w": [0, 1], "e": [0, 2],
                        "a": [1, 0], "s": [1, 1], "d": [1, 2],
                        "z": [2, 0], "x": [2, 1], "c": [2, 2]}
 
     def __init__(self):
-        self.fields = Field.I
-        self.stsndart_field = Field.stsndart_field
-    # DRAW THE FIELD
+        self.fields = Field.standard_field()
 
+    # DRAW THE FIELD
     @staticmethod
-    def giwe_copy_list(list, standart_list):
-        list = standart_list.copy()
-        return list
+    def standard_field():
+        return [[".", ".", "."],
+                [".", ".", "."],
+                [".", ".", "."]]
+
+    def clear_field(self):
+        self.fields = Field.standard_field()
 
     @staticmethod
     def draw_field(i):
@@ -81,7 +76,7 @@ class Game:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def start(self):
-        Field.draw_field(Field.giwe_copy_list(Field.I, Field.stsndart_field))
+        Field.draw_field(self.field.fields)
         while True:
             print("press 0 to exit")
             player1_move = self.get_move(self.player1)
@@ -105,7 +100,7 @@ class Game:
         is_game_end = self.is_game_end()
         if result is False and not is_game_end:
             return
-
+        self.field.clear_field()
         if is_game_end and not result:
             print("Draw!")
             return True
@@ -202,6 +197,10 @@ class Game:
 class Menu:
     print("Hello, bitches")
 
+    def __init__(self, *args, **kwargs):
+
+        self.field = Field()
+
     def main_menu(self):
 
         a = input(f"1--PLAY GAME"
@@ -212,6 +211,7 @@ class Menu:
             player2 = Player("O", input("\nenter name for O: "))
 
             io = Game(player1, player2)
+
             io.start()
             self.main_menu()
         elif a == "2":
