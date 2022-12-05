@@ -1,3 +1,4 @@
+import json
 import os
 # CLEAR THE CONSOL
 
@@ -211,8 +212,6 @@ class Game:
 
 
 class Menu:
-
-    print("Hello, bitches")
 
     def __init__(self):
 
